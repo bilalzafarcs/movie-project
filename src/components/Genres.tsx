@@ -25,7 +25,7 @@ const Genres: React.FC<{
         {genres.map((genre) => (
            <Link 
            key={genre.id}
-           to={`/${type}/${genre.name.toLowerCase()}`} 
+           to={`/${type}/${genre.name.toLowerCase().replace(/\s+/g, '-')}`}
            onClick={() => handleGenreClick(genre.id)} 
            className={`list-group-item list-group-item-action ${selectedGenre === genre.id ? 'active' : ''}`}
          >
