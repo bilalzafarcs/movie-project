@@ -13,9 +13,10 @@ const useCustomState = () => {
   const [languages, setlanguages] = useState<any[]>([]);
   const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
   const [loading, setLoading] = useState<boolean>(true);
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
   return {
     movies,setMovies,type,setType,category,setCategory,totalPages,currentPage,setCurrentPage,loading,setLoading,
-    genres,setGenres,selectedGenre,setSelectedGenre,languages,setlanguages,selectedLanguage,setSelectedLanguage
+    genres,setGenres,selectedGenre,setSelectedGenre,languages,setlanguages,selectedLanguage,setSelectedLanguage,selectedYear,setSelectedYear
   }
 }
 

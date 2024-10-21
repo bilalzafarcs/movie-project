@@ -3,13 +3,16 @@ import MovieCard from './components/MovieCard';
 import Header from './components/Header';
 import Paginations from './components/Paginations';
 import Genres from './components/Genres';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchData, fetchGenres, fetchLangs } from './utils/apiservice'; 
 import config from './utils/config';
 import useCustomState from './utils/useCustomState';
 import Languages from './components/Languages';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const App: React.FC = () => {
+ 
   const {
     movies,
     setMovies,
@@ -29,13 +32,15 @@ const App: React.FC = () => {
     languages,
     setlanguages,
     selectedLanguage,
-    setSelectedLanguage
+    setSelectedLanguage,
+    selectedYear,
+    setSelectedYear
   } = useCustomState();
 
   const loadData = async () => {
     setLoading(true);
     try {
-      const data = await fetchData(category, type, currentPage, selectedGenre ?? undefined, selectedLanguage);
+      const data = await fetchData(category, type, currentPage, selectedGenre ?? undefined, selectedLanguage, selectedYear ?? undefined);
       setMovies(data);
     } catch (error) {
       console.error('Error fetching movies:', error);
@@ -67,6 +72,7 @@ const App: React.FC = () => {
     setLoading(true)
     setSelectedGenre(null);
     setCurrentPage(1);
+    setSelectedYear(null);
   }, [type]);
 
 
@@ -84,7 +90,7 @@ const App: React.FC = () => {
       loadData();
     }, 300);
     return () => clearTimeout(loadloadData); 
-  }, [type, currentPage, selectedGenre, category, selectedLanguage]);
+  }, [type, currentPage, selectedGenre, category, selectedLanguage, selectedYear]);
 
 
   useEffect(() => {
@@ -93,6 +99,17 @@ const App: React.FC = () => {
     }, 600);
     return () => clearTimeout(loadGenresDebounced); 
   }, [type]);
+
+  
+
+  const handleYearChange = (date: Date | null) => {
+    if (date) {
+      const year = date.getFullYear();
+      setSelectedYear(year);
+    } else {
+      setSelectedYear(null);
+    }
+  };
 
 
 
@@ -104,7 +121,7 @@ const App: React.FC = () => {
 
   return (
     <>
-      <Header setType={setType} setCategory={setCategory} setSelectedGenre={setSelectedGenre}/>
+      <Header setType={setType} setCategory={setCategory} setSelectedGenre={setSelectedGenre} setSelectedYear={setSelectedYear}/>
       <section className='mt-5 mb-5'>
         <div className="container">
           <div className="row">
@@ -119,6 +136,15 @@ const App: React.FC = () => {
                     setSelectedLanguage={setSelectedLanguage}
                     languages={languages}
                   />
+                </div>
+                <div className="col-md-6">
+                <DatePicker
+                  selected={selectedYear ? new Date(selectedYear, 0, 1) : null} 
+                  onChange={handleYearChange}
+                  showYearPicker
+                  dateFormat="yyyy"
+                  placeholderText="Select Year"
+                />
                 </div>
               <div className="col-md-12" >
                 {movies.map((movie) => (
