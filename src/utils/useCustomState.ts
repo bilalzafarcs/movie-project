@@ -14,9 +14,12 @@ const useCustomState = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [genereName, setGenreName] = useState<string>('');
   return {
     movies,setMovies,type,setType,category,setCategory,totalPages,currentPage,setCurrentPage,loading,setLoading,
-    genres,setGenres,selectedGenre,setSelectedGenre,languages,setlanguages,selectedLanguage,setSelectedLanguage,selectedYear,setSelectedYear
+    genres,setGenres,selectedGenre,setSelectedGenre,languages,setlanguages,selectedLanguage,setSelectedLanguage,selectedYear,setSelectedYear,
+    searchQuery,setSearchQuery,genereName,setGenreName
   }
 }
 

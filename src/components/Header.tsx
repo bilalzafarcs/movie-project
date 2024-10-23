@@ -7,13 +7,17 @@ const Header: React.FC<{
   setCategory: (type: string) => void; 
   setSelectedGenre: (type: number | null) => void; 
   setSelectedYear: (type: number | null) => void; 
-}> = ({ setType, setCategory, setSelectedGenre, setSelectedYear }) => {
+  setSearchQuery: (type: string) => void; 
+  setCurrentPage: (type: number ) => void;
+}> = ({ setType, setCategory, setSelectedGenre, setSelectedYear,setSearchQuery,setCurrentPage }) => {
   
-  const handleSetFilters = (type: string, category: string = '', resetGenre: boolean = true, resetYear: boolean = true) => {
+  const handleSetFilters = (type: string, category: string = '', resetGenre: boolean = true, resetYear: boolean = true, resetSearch: boolean = true, resetPage: number = 1) => {
     setType(type);
     setCategory(category);
     if (resetGenre) setSelectedGenre(null);
     if (resetYear) setSelectedYear(null);
+    if (resetSearch) setSearchQuery('');
+    if (resetPage) setCurrentPage(1);
   };
 
   const navLinks = [
@@ -45,7 +49,7 @@ const Header: React.FC<{
     <header className="navbar">
       <div className="container">
         <div className="row">
-          <div className="col-12">
+          <div className="col-md-12">
             <nav>
               <Link to="/"><img className="logo" src="/src/assets/logo.png" alt="Logo"/></Link>
               {navLinks.map((menu) => (
@@ -56,7 +60,7 @@ const Header: React.FC<{
                       <Link 
                         key={link.label} 
                         to={link.path} 
-                        onClick={() => handleSetFilters(menu.type, link.category, true, true)}
+                        onClick={() => handleSetFilters(menu.type, link.category, true, true, true, 1)}
                       >
                         {link.label}
                       </Link>

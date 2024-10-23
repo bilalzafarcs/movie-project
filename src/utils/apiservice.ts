@@ -26,3 +26,11 @@ export const fetchLangs = async () => {
   const data = await response.json();
   return data || []; 
 };
+
+
+export const fetchSearchQuery = async (searchQuery : string, type: string, currentPage: number, selectedYear?: number) => {
+  let yearQuery = selectedYear ? `&primary_release_year=${selectedYear}` : '';
+  const response = await fetch(`${config.API_URL}search/${type}?query=${searchQuery}&api_key=${config.API_KEY}&page=${currentPage}${yearQuery}`);
+  const data = await response.json();
+  return data.results || [];
+};

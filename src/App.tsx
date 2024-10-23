@@ -4,7 +4,7 @@ import Header from './components/Header';
 import Paginations from './components/Paginations';
 import Genres from './components/Genres';
 import { useEffect, useState } from 'react';
-import { fetchData, fetchGenres, fetchLangs } from './utils/apiservice'; 
+import { fetchData, fetchGenres, fetchLangs, fetchSearchQuery } from './utils/apiservice'; 
 import config from './utils/config';
 import useCustomState from './utils/useCustomState';
 import Languages from './components/Languages';
@@ -34,10 +34,14 @@ const App: React.FC = () => {
     selectedLanguage,
     setSelectedLanguage,
     selectedYear,
-    setSelectedYear
+    setSelectedYear,
+    searchQuery,
+    setSearchQuery,
+    genereName,
+    setGenreName
   } = useCustomState();
 
-  const loadData = async () => {
+  const loadData = async () => { 
     setLoading(true);
     try {
       const data = await fetchData(category, type, currentPage, selectedGenre ?? undefined, selectedLanguage, selectedYear ?? undefined);
@@ -67,6 +71,15 @@ const App: React.FC = () => {
     } 
   };
 
+  const loadSearchResult = async () => {
+    try {
+      const searchData = await fetchSearchQuery(searchQuery,type,currentPage,selectedYear ?? undefined);
+      setMovies(searchData); 
+    } catch (error) {
+      console.error('Error loading searchData:', error);
+    } 
+  };
+
 
   useEffect(() => {
     setLoading(true)
@@ -86,10 +99,14 @@ const App: React.FC = () => {
 
   
   useEffect(() => {
-    const loadloadData = setTimeout(() => {
-      loadData();
-    }, 300);
-    return () => clearTimeout(loadloadData); 
+    if(searchQuery){
+      loadSearchResult();
+    }else{
+      const loadloadData = setTimeout(() => {
+        loadData();
+      }, 300);
+      return () => clearTimeout(loadloadData); 
+    }
   }, [type, currentPage, selectedGenre, category, selectedLanguage, selectedYear]);
 
 
@@ -111,6 +128,10 @@ const App: React.FC = () => {
     }
   };
 
+  const handleSearch = () => {
+    loadSearchResult();
+  };
+
 
 
   if (loading) return <>
@@ -121,31 +142,46 @@ const App: React.FC = () => {
 
   return (
     <>
-      <Header setType={setType} setCategory={setCategory} setSelectedGenre={setSelectedGenre} setSelectedYear={setSelectedYear}/>
+      <Header setType={setType} setCategory={setCategory} setSelectedGenre={setSelectedGenre} setSelectedYear={setSelectedYear} setSearchQuery={setSearchQuery} 
+      setCurrentPage={setCurrentPage}/>
       <section className='mt-5 mb-5'>
         <div className="container">
           <div className="row">
             <div className="col-md-4">
-              <Genres type={type} genres={genres} setSelectedGenre={setSelectedGenre} selectedGenre={selectedGenre} setCurrentPage={setCurrentPage} />
+              <Genres type={type} genres={genres} setSelectedGenre={setSelectedGenre} selectedGenre={selectedGenre} setCurrentPage={setCurrentPage} 
+              setGenreName={setGenreName}/>
             </div>
             <div className="col-md-8">
               <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-4">
                   <Languages
                     selectedLanguage={selectedLanguage}
                     setSelectedLanguage={setSelectedLanguage}
                     languages={languages}
                   />
                 </div>
-                <div className="col-md-6">
-                <DatePicker
-                  selected={selectedYear ? new Date(selectedYear, 0, 1) : null} 
-                  onChange={handleYearChange}
-                  showYearPicker
-                  dateFormat="yyyy"
-                  placeholderText="Select Year"
-                />
+                <div className="col-md-4">
+                  <DatePicker
+                    selected={selectedYear ? new Date(selectedYear, 0, 1) : null} 
+                    onChange={handleYearChange}
+                    showYearPicker
+                    dateFormat="yyyy"
+                    placeholderText="Select Year"
+                  />
                 </div>
+                <div className="col-md-4">
+                  <div className="input-group mb-3">
+                    <input type="text" className="form-control search-form" placeholder="Search" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
+                    <div className="input-group-append">
+                      <button className="btn btn-search" type="button" onClick={handleSearch}>Submit</button>
+                    </div>
+                  </div>
+                </div>
+              <div className="col-md-12">
+                {searchQuery && (
+                  <h2 className="serach-heading">Results for Search: {searchQuery} </h2>
+                )}
+              </div>
               <div className="col-md-12" >
                 {movies.map((movie) => (
                     <MovieCard 

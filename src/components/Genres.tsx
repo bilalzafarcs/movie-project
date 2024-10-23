@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const Genres: React.FC<{
@@ -7,15 +7,18 @@ const Genres: React.FC<{
   setSelectedGenre: (genreId: number) => void;
   selectedGenre: number | null;
   setCurrentPage: (page: number) => void;
-}> = ({ type, genres, setSelectedGenre, selectedGenre, setCurrentPage }) => {
+  setGenreName: (name: string) => void; 
+}> = ({ type, genres, setSelectedGenre, selectedGenre, setCurrentPage, setGenreName }) => {
 
   if (!genres.length) return <div>No genres found</div>;
 
-  const handleGenreClick = (genreId: number) => {
-    setSelectedGenre(genreId);
+  const handleGenreClick = (genre: any) => {
+    setSelectedGenre(genre.id);
     setCurrentPage(1); 
+    setGenreName(genre.name);  
   };
-  
+
+
   return (
     <div className="genres-div">
       <div className="list-group">
@@ -26,7 +29,7 @@ const Genres: React.FC<{
            <Link 
            key={genre.id}
            to={`/${type}/${genre.name.toLowerCase().replace(/\s+/g, '-')}`}
-           onClick={() => handleGenreClick(genre.id)} 
+           onClick={() => handleGenreClick(genre)} 
            className={`list-group-item list-group-item-action ${selectedGenre === genre.id ? 'active' : ''}`}
          >
            {genre.name}
