@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { GenresProps } from '../utils/interfaces';
 
-const Genres: React.FC<{
-  type: string;
-  genres: any[];
-  setSelectedGenre: (genreId: number) => void;
-  selectedGenre: number | null;
-  setCurrentPage: (page: number) => void;
-  setGenreName: (name: string) => void; 
-}> = ({ type, genres, setSelectedGenre, selectedGenre, setCurrentPage, setGenreName }) => {
+const Genres: React.FC<GenresProps> = ({ type, genres, setSelectedGenre, selectedGenre, setCurrentPage, setGenreName }) => {
 
   if (!genres.length) return <div>No genres found</div>;
 
